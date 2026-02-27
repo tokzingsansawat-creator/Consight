@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Consight - Student Insight (Responsive)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Kanit', sans-serif;
+      background: radial-gradient(circle at top left, #0f172a, #020617);
+      background-attachment: fixed;
+      color: #e2e8f0;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    .glass-card {
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 1.5rem;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+    }
+    .dark-input {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(139, 92, 246, 0.3);
+      color: white;
+      transition: all 0.3s ease;
+    }
+    .dark-input:focus {
+      border-color: #8b5cf6;
+      outline: none;
+      box-shadow: 0 0 15px rgba(139, 92, 246, 0.2);
+    }
+    .mic-btn {
+      width: clamp(120px, 25vw, 180px);
+      height: clamp(120px, 25vw, 180px);
+      border-radius: 50%;
+      background: linear-gradient(135deg, #6366F1, #d946ef);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 0 30px rgba(99, 102, 241, 0.4);
+      position: relative;
+      transition: transform 0.2s;
+      flex-shrink: 0;
+    }
+    .mic-btn:active { transform: scale(0.95); }
+    .mic-btn.recording { box-shadow: 0 0 50px rgba(239, 68, 68, 0.6); background: linear-gradient(135deg, #ef4444, #f97316); }
+    .mic-btn i { font-size: clamp(2.5rem, 5vw, 3.5rem); color: white; z-index: 10; }
+    
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(139, 92, 246, 0.3); border-radius: 10px; }
+  </style>
+</head>
+<body class="flex flex-col items-center justify-center p-4 lg:p-6 min-h-screen">
+
+  <div id="loginPage" class="w-full max-w-md glass-card p-6 md:p-8 flex flex-col items-center gap-6 my-auto">
+    <div class="w-20 h-20 md:w-24 md:h-24 rounded-full bg-gradient-to-br from-violet-600 to-fuchsia-600 flex items-center justify-center shadow-lg shadow-violet-500/30 mb-2">
+      <i class="fa-solid fa-graduation-cap text-3xl md:text-4xl text-white"></i>
+    </div>
+    <div class="text-center">
+      <h2 class="text-2xl font-bold text-white">ลงทะเบียน</h2>
+      <p class="text-slate-400 text-sm">กรอกข้อมูลเพื่อเริ่มใช้งาน</p>
+    </div>
+    <form id="loginForm" class="w-full space-y-4">
+      <div>
+        <label class="text-xs text-slate-400 ml-2">ชื่อ - นามสกุล</label>
+        <input type="text" id="inputName" required class="w-full p-3 rounded-xl dark-input" placeholder="เช่น นายไบรท์ กฤตภาส">
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+           <label class="text-xs text-slate-400 ml-2">ระดับชั้น</label>
+           <select id="inputClass" required class="w-full p-3 rounded-xl dark-input appearance-none">
+             <option value="" class="text-black">เลือกชั้น</option>
+             <option value="ม.1" class="text-black">ม.1</option>
+             <option value="ม.2" class="text-black">ม.2</option>
+             <option value="ม.3" class="text-black">ม.3</option>
+             <option value="ม.4" class="text-black">ม.4</option>
+             <option value="ม.5" class="text-black">ม.5</option>
+             <option value="ม.6" class="text-black">ม.6</option>
+           </select>
+        </div>
+        <div>
+           <label class="text-xs text-slate-400 ml-2">รหัสประจำตัว</label>
+           <input type="number" id="inputID" required class="w-full p-3 rounded-xl dark-input" placeholder="xxxxx">
+        </div>
+      </div>
+      <div class="flex items-start gap-3 pt-2">
+        <div class="flex items-center h-5">
+          <input id="consentCheck" type="checkbox" required class="w-5 h-5 border border-slate-500 rounded bg-slate-800">
+        </div>
+        <label for="consentCheck" class="text-sm font-medium text-slate-300 leading-tight">
+          ยอมรับ <a href="#" class="text-violet-400 underline">นโยบายความเป็นส่วนตัว</a>
+        </label>
+      </div>
+      <button type="submit" class="w-full py-3.5 bg-gradient-to-r from-violet-600 to-fuchsia-600 rounded-xl text-white font-bold text-lg shadow-lg hover:brightness-110 transition-all active:scale-95 mt-4">
+        เข้าสู่ระบบ
+      </button>
+    </form>
+  </div>
+
+  <div id="dashboardPage" class="hidden w-full max-w-7xl grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6 h-auto">
+    <div class="lg:col-span-5 glass-card p-6 flex flex-col items-center relative overflow-hidden">
+      <div class="w-full flex justify-between items-center mb-6">
+        <div class="flex items-center gap-2">
+          <div class="w-1.5 h-6 bg-fuchsia-500 rounded-full"></div>
+          <h2 class="text-lg font-bold">บันทึกเสียง</h2>
+        </div>
+        <div class="text-[10px] md:text-xs font-mono text-slate-400 bg-slate-800/50 px-3 py-1 rounded-full">AI Mode</div>
+      </div>
+      <div class="w-full flex-1 flex flex-col justify-center items-center gap-4">
+        <button id="micBtn" class="mic-btn">
+          <i class="fa-solid fa-microphone"></i>
+        </button>
+        <div class="text-center">
+          <h3 id="micLabel" class="text-xl font-bold text-white">แตะเพื่อเริ่มพูด</h3>
+          <p id="statusText" class="text-slate-400 text-sm">ระบบพร้อมรับฟังปัญหาของคุณ</p>
+        </div>
+        <textarea id="result" class="w-full h-32 bg-black/20 text-slate-200 p-4 rounded-2xl focus:outline-none border border-white/5" placeholder="ข้อความจะปรากฏที่นี่..."></textarea>
+        <button id="analyzeBtn" onclick="goToDashboard()" class="w-full py-3.5 bg-violet-600 rounded-xl font-bold text-white mt-2">
+           ประมวลผล (Analyze)
+        </button>
+      </div>
+    </div>
+
+    <div class="lg:col-span-7 glass-card p-6 flex flex-col">
+      <div class="flex items-center gap-4 border-b border-white/10 pb-4 mb-4">
+        <div class="w-16 h-16 rounded-full bg-slate-700 flex items-center justify-center">
+          <i class="fa-solid fa-user text-2xl text-slate-400"></i>
+        </div>
+        <div>
+          <h2 id="displayName" class="text-xl font-bold text-white">รอดำเนินการ...</h2>
+          <p id="displayInfo" class="text-sm text-slate-400">ยังไม่มีข้อมูลการบันทึก</p>
+        </div>
+      </div>
+      <div id="dashboardContent" class="flex-1 flex items-center justify-center text-slate-500 italic">
+        ส่วนแสดงผล Dashboard จะปรากฏที่นี่หลังจากประมวลผล
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const loginForm = document.getElementById('loginForm');
+    
+    loginForm.onsubmit = (e) => {
+      e.preventDefault();
+      document.getElementById('displayName').innerText = document.getElementById('inputName').value;
+      document.getElementById('displayInfo').innerText = `ชั้น: ${document.getElementById('inputClass').value} | รหัส: ${document.getElementById('inputID').value}`;
+      
+      document.getElementById('loginPage').classList.add('hidden');
+      document.getElementById('dashboardPage').classList.remove('hidden');
+      document.body.classList.remove('justify-center'); // ปรับ layout ให้เริ่มจากด้านบน
+    };
+
+    function goToDashboard() {
+        // ขั้นตอนต่อไป: เราจะเขียนฟังก์ชันดึงค่าจาก Gemini มาใส่ในหน้านี้
+        alert("กำลังวิเคราะห์ข้อมูลเชิงลึก...");
+    }
+  </script>
+</body>
+</html>
+
