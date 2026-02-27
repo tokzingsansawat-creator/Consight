@@ -146,23 +146,75 @@
   </div>
 
   <script>
-    const loginForm = document.getElementById('loginForm');
-    
-    loginForm.onsubmit = (e) => {
+    let mediaRecorder;
+    let audioChunks = [];
+    const micBtn = document.getElementById('micBtn');
+    const statusText = document.getElementById('statusText');
+    const resultArea = document.getElementById('result');
+    const analyzeBtn = document.getElementById('analyzeBtn');
+
+    // 1. ฟังก์ชันสลับหน้า
+    function showPage(p) {
+      document.querySelectorAll('.card, #loginPage, #dashboardPage').forEach(c => c.classList.add('hidden'));
+      document.getElementById(p).classList.remove('hidden');
+      if(p === 'dashboardPage') document.body.classList.remove('justify-center');
+    }
+
+    // 2. จัดการฟอร์ม Login
+    document.getElementById('loginForm').onsubmit = (e) => {
       e.preventDefault();
       document.getElementById('displayName').innerText = document.getElementById('inputName').value;
-      document.getElementById('displayInfo').innerText = `ชั้น: ${document.getElementById('inputClass').value} | รหัส: ${document.getElementById('inputID').value}`;
-      
-      document.getElementById('loginPage').classList.add('hidden');
-      document.getElementById('dashboardPage').classList.remove('hidden');
-      document.body.classList.remove('justify-center'); // ปรับ layout ให้เริ่มจากด้านบน
+      showPage('dashboardPage');
+    };
+
+    // 3. ฟังก์ชันอัดเสียงของจริง
+    micBtn.onclick = async () => {
+      if (!mediaRecorder || mediaRecorder.state === "inactive") {
+        // เริ่มอัดเสียง
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          mediaRecorder = new MediaRecorder(stream);
+          audioChunks = [];
+
+          mediaRecorder.ondataavailable = (event) => {
+            audioChunks.push(event.data);
+          };
+
+          mediaRecorder.onstop = () => {
+            const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+            // ตรงนี้คุณสามารถนำ audioBlob ไปส่งให้ API (Whisper/Gemini) ได้
+            statusText.innerText = "บันทึกเสียงสำเร็จ พร้อมวิเคราะห์";
+            analyzeBtn.disabled = false;
+            analyzeBtn.classList.remove('bg-slate-700');
+            analyzeBtn.classList.add('bg-emerald-600');
+          };
+
+          mediaRecorder.start();
+          micBtn.classList.add('recording');
+          document.getElementById('micLabel').innerText = "กำลังรับฟัง...";
+          statusText.innerText = "กรุณาพูดปัญหาของคุณ...";
+        } catch (err) {
+          alert("ไม่สามารถเข้าถึงไมโครโฟนได้: " + err);
+        }
+      } else {
+        // หยุดอัดเสียง
+        mediaRecorder.stop();
+        micBtn.classList.remove('recording');
+        document.getElementById('micLabel').innerText = "แตะเพื่อเริ่มใหม่";
+        mediaRecorder.stream.getTracks().forEach(track => track.stop()); // ปิดไมค์
+      }
     };
 
     function goToDashboard() {
-        // ขั้นตอนต่อไป: เราจะเขียนฟังก์ชันดึงค่าจาก Gemini มาใส่ในหน้านี้
-        alert("กำลังวิเคราะห์ข้อมูลเชิงลึก...");
+      // ส่วนนี้เราจะมาเชื่อมต่อกับระบบ Dashboard จริงในขั้นตอนถัดไป
+      document.getElementById('dashboardContent').innerHTML = `
+        <div class="w-full text-left space-y-4">
+          <div class="p-4 bg-emerald-500/10 border border-emerald-500/30 rounded-xl">
+             <h4 class="text-emerald-400 font-bold">วิเคราะห์สำเร็จ</h4>
+             <p class="text-sm">ระบบตรวจพบอารมณ์เชิงบวก 70% และความกังวลเล็กน้อย</p>
+          </div>
+        </div>
+      `;
     }
   </script>
-</body>
-</html>
-
+  
